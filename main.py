@@ -7,44 +7,24 @@ def draw(canvas):
     canvas.border()
     curses.curs_set(False)
     row, column = (5, 20)
-    coroutine = blink(canvas=canvas, row=row, column=column)
+    coroutines = []
+    stars_amount = 5
 
-    coroutine.send(None)
-    canvas.refresh()
-    time.sleep(2)
+    for star in range(stars_amount):
+        coroutine = blink(canvas=canvas, row=row, column=column)
+        coroutines.append(coroutine)
+        column += 5
 
-    coroutine.send(None)
-    canvas.refresh()
-    time.sleep(0.3)
-
-    coroutine.send(None)
-    canvas.refresh()
-    time.sleep(0.5)
-
-    coroutine.send(None)
-    canvas.refresh()
-    time.sleep(0.3)
-
-    time.sleep(10)
-
-
-def render_flickering_star(canvas):
-    canvas.border()
-    curses.curs_set(False)
-    row, column = (5, 20)
-    star = '*'
-    canvas.addstr(row, column, star, curses.A_DIM)
-    canvas.refresh()
-    time.sleep(2)
-    canvas.addstr(row, column, star)
-    canvas.refresh()
-    time.sleep(0.3)
-    canvas.addstr(row, column, star, curses.A_BOLD)
-    canvas.refresh()
-    time.sleep(0.5)
-    canvas.addstr(row, column, star)
-    canvas.refresh()
-    time.sleep(0.3)
+    while True:
+        for coroutine in coroutines.copy():
+            try:
+                coroutine.send(None)
+            except StopIteration:
+                coroutines.remove(coroutine)
+            if not len(coroutines):
+                break
+        canvas.refresh()
+        time.sleep(1)
 
 
 async def blink(canvas, row, column, symbol='*'):
@@ -64,4 +44,5 @@ async def blink(canvas, row, column, symbol='*'):
 
 if __name__ == '__main__':
     curses.update_lines_cols()
-    curses.wrapper(draw)
+    while True:
+        curses.wrapper(draw)
