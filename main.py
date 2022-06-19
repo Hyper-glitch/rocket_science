@@ -5,7 +5,7 @@ import time
 
 from game_constants import (
     TIC_TIMEOUT, DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, STARS_AMOUNT, STARS_SYMBOLS,
-    BORDER_THICKNESS,
+    BORDER_THICKNESS, START_RANDINT,
 )
 
 
@@ -17,7 +17,7 @@ def draw(canvas):
 
     for star in range(STARS_AMOUNT):
         row = random.randint(0, max_row - BORDER_THICKNESS)
-        column = random.randint(0, max_column - BORDER_THICKNESS)
+        column = random.randint(START_RANDINT, max_column - BORDER_THICKNESS)
         coroutine = blink(canvas=canvas, row=row, column=column, symbol=random.choice(STARS_SYMBOLS))
         coroutines.append(coroutine)
 
@@ -34,6 +34,10 @@ def draw(canvas):
 
 
 async def blink(canvas, row, column, symbol):
+    canvas.addstr(row, column, symbol, curses.A_DIM)
+    for _ in range(random.randint(START_RANDINT, DIM_DURATION)):
+        await asyncio.sleep(0)
+
     while True:
         canvas.addstr(row, column, symbol, curses.A_DIM)
         for _ in range(DIM_DURATION):
