@@ -2,8 +2,7 @@ import asyncio
 import curses
 import time
 
-
-TIC_TIMEOUT = 0.1
+from game_constants import (TIC_TIMEOUT, DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION)
 
 
 def draw(canvas):
@@ -33,19 +32,19 @@ def draw(canvas):
 async def blink(canvas, row, column, symbol='*'):
     while True:
         canvas.addstr(row, column, symbol, curses.A_DIM)
-        for _ in range(20):
+        for _ in range(DIM_DURATION):
             await asyncio.sleep(0)
 
         canvas.addstr(row, column, symbol)
-        for _ in range(3):
+        for _ in range(NORMAL_DURATION):
             await asyncio.sleep(0)
 
         canvas.addstr(row, column, symbol, curses.A_BOLD)
-        for _ in range(5):
+        for _ in range(BRIGHT_DURATION):
             await asyncio.sleep(0)
 
         canvas.addstr(row, column, symbol)
-        for _ in range(3):
+        for _ in range(NORMAL_DURATION):
             await asyncio.sleep(0)
 
 
