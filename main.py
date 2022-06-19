@@ -3,6 +3,7 @@ import curses
 import random
 import time
 
+from fire_animation import fire
 from game_constants import (
     TIC_TIMEOUT, DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, STARS_AMOUNT, STARS_SYMBOLS,
     BORDER_THICKNESS, START_RANDINT,
@@ -20,6 +21,12 @@ def draw(canvas):
         column = random.randint(START_RANDINT, max_column - BORDER_THICKNESS)
         coroutine = blink(canvas=canvas, row=row, column=column, symbol=random.choice(STARS_SYMBOLS))
         coroutines.append(coroutine)
+
+    fire_coroutine = fire(
+        canvas=canvas, start_row=max_row - BORDER_THICKNESS,
+        start_column=max_column - BORDER_THICKNESS, rows_speed=-1,
+    )
+    coroutines.append(fire_coroutine)
 
     while True:
         for coroutine in coroutines.copy():
