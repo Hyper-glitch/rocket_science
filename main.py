@@ -1,13 +1,9 @@
-import asyncio
 import curses
 import random
 import time
 
-from fire_animation import fire
-from game_constants import (
-    TIC_TIMEOUT, DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, STARS_AMOUNT, STARS_SYMBOLS,
-    BORDER_THICKNESS, START_RANDINT,
-)
+from animation_tools import fire, blink
+from game_constants import (TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT, )
 
 
 def draw(canvas):
@@ -38,29 +34,6 @@ def draw(canvas):
                 break
         canvas.refresh()
         time.sleep(TIC_TIMEOUT)
-
-
-async def blink(canvas, row, column, symbol):
-    canvas.addstr(row, column, symbol, curses.A_DIM)
-    for _ in range(random.randint(START_RANDINT, DIM_DURATION)):
-        await asyncio.sleep(0)
-
-    while True:
-        canvas.addstr(row, column, symbol, curses.A_DIM)
-        for _ in range(DIM_DURATION):
-            await asyncio.sleep(0)
-
-        canvas.addstr(row, column, symbol)
-        for _ in range(NORMAL_DURATION):
-            await asyncio.sleep(0)
-
-        canvas.addstr(row, column, symbol, curses.A_BOLD)
-        for _ in range(BRIGHT_DURATION):
-            await asyncio.sleep(0)
-
-        canvas.addstr(row, column, symbol)
-        for _ in range(NORMAL_DURATION):
-            await asyncio.sleep(0)
 
 
 if __name__ == '__main__':
