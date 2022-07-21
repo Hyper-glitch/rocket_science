@@ -1,7 +1,7 @@
 import asyncio
 import curses
 import random
-
+import glob
 from game_constants import START_RANDINT, DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION
 
 
@@ -57,4 +57,7 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
 
 async def animate_spaceship():
-    pass
+    frame_paths = glob.glob("frames/rocket/*.txt")
+    for path in frame_paths:
+        with open(path) as frame:
+            pass
