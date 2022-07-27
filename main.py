@@ -22,7 +22,9 @@ def draw(canvas):
         canvas=canvas, start_row=max_row - BORDER_THICKNESS,
         start_column=max_column - BORDER_THICKNESS, rows_speed=-1,
     )
-    spaceship_coroutine = animate_spaceship(canvas, row=5, column=50)
+    spaceship_coroutine = animate_spaceship(
+        canvas, row=max_row // 2, column=max_column // 2, max_row=max_row, max_column=max_column,
+    )
     coroutines.extend([fire_coroutine, spaceship_coroutine])
 
     while True:
