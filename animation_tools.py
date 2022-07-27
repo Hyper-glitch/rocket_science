@@ -5,8 +5,8 @@ import time
 from itertools import cycle
 from pathlib import Path, PurePath
 
-from curses_tools import draw_frame
-from game_constants import START_RANDINT, DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION
+from curses_tools import draw_frame, read_controls, get_frame_size
+from game_constants import START_RANDINT, DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS
 
 
 async def blink(canvas, row, column, symbol):
@@ -60,15 +60,23 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
         column += columns_speed
 
 
-async def animate_spaceship(canvas, row, column):
+async def animate_spaceship(canvas, row, column, max_row, max_column):
     dir_path = Path('frames/rocket').absolute()
 
     for frame in cycle(Path.iterdir(dir_path)):
         with open(PurePath.joinpath(dir_path, frame), 'r') as first_frame:
-            first_file_content = first_frame.read()
+            file_content = first_frame.read()
 
-        animate_spaceship_tool(canvas, row, column, first_file_content)
-        draw_frame(canvas, row, column, first_file_content, negative=True)
+        rows_direction, columns_direction, space_pressed = read_controls(canvas)
+        frame_rows, frame_columns = get_frame_size(file_content)
+
+        row = min(row + rows_direction, max_row - frame_rows - BORDER_THICKNESS)
+        row = max(row, BORDER_THICKNESS)
+        column = min(column + columns_direction, max_column - frame_columns - BORDER_THICKNESS)
+        column = max(column, BORDER_THICKNESS)
+
+        animate_spaceship_tool(canvas, row, column, file_content)
+        draw_frame(canvas, row, column, file_content, negative=True)
 
 
 def animate_spaceship_tool(canvas, row, column, file_content):
