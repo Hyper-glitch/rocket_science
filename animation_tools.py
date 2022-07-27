@@ -2,6 +2,8 @@ import asyncio
 import curses
 import random
 import time
+from itertools import cycle
+from pathlib import Path, PurePath
 
 from curses_tools import draw_frame
 from game_constants import START_RANDINT, DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION
@@ -59,14 +61,14 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
 
 async def animate_spaceship(canvas, row, column):
-    rocket_frames = ['frames/rocket/rocket_frame_1.txt', 'frames/rocket/rocket_frame_2.txt']
-    with open(rocket_frames[0], 'r') as first_frame, open(rocket_frames[1], 'r') as second_frame:
-        first_file_content = first_frame.read()
-        second_file_content = second_frame.read()
+    dir_path = Path('frames/rocket').absolute()
 
-    animate_spaceship_tool(canvas, row, column, first_file_content)
-    draw_frame(canvas, row, column, first_file_content, negative=True)
-    animate_spaceship_tool(canvas, row, column, second_file_content)
+    for frame in cycle(Path.iterdir(dir_path)):
+        with open(PurePath.joinpath(dir_path, frame), 'r') as first_frame:
+            first_file_content = first_frame.read()
+
+        animate_spaceship_tool(canvas, row, column, first_file_content)
+        draw_frame(canvas, row, column, first_file_content, negative=True)
 
 
 def animate_spaceship_tool(canvas, row, column, file_content):
