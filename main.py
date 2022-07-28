@@ -3,7 +3,7 @@ import random
 import time
 
 from animation_tools import fire, blink, animate_spaceship
-from game_constants import (TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT, )
+from game_constants import TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT
 
 
 def draw(canvas):
