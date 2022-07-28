@@ -1,3 +1,4 @@
+"""Module for running main logic of program."""
 import curses
 import random
 import time
@@ -6,7 +7,11 @@ from animation_tools import fire, blink, animate_spaceship
 from game_constants import TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT
 
 
-def draw(canvas):
+def draw(canvas) -> None:
+    """
+    This function like event loop, use for register and running tasks.
+    :param canvas: place for render all animation.
+    """
     canvas.border()
     curses.curs_set(False)
     max_row, max_column = canvas.getmaxyx()
