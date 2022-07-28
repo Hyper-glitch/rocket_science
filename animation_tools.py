@@ -1,7 +1,7 @@
+"""Module that helps animate stars, fire, spaceship."""
 import asyncio
 import curses
 import random
-import time
 from itertools import cycle
 from pathlib import Path, PurePath
 
@@ -9,7 +9,15 @@ from curses_tools import draw_frame, read_controls, get_frame_size
 from game_constants import START_RANDINT, DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS
 
 
-async def blink(canvas, row, column, symbol):
+async def blink(canvas: curses.window, row: int, column: int, symbol: str) -> None:
+    """
+    Animate stars blink asynchronously.
+    :param canvas: place for rendering animation.
+    :param row: Y canvas coordinate.
+    :param column: X canvas coordinate.
+    :param symbol: symbol for rendering on canvas.
+    :return: None
+    """
     canvas.addstr(row, column, symbol, curses.A_DIM)
     for _ in range(random.randint(START_RANDINT, DIM_DURATION)):
         await asyncio.sleep(0)
@@ -60,11 +68,21 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
         column += columns_speed
 
 
-async def animate_spaceship(canvas, row, column, max_row, max_column):
-    dir_path = Path('frames/rocket').absolute()
+async def animate_spaceship(canvas: curses.window, row: int, column: int, max_row: int, max_column: int) -> None:
+    """
+    Animate spaceship frames.
+    :param canvas: place for rendering animation.
+    :param row: Y-canvas coordinate.
+    :param column: X-canvas coordinate.
+    :param max_row: max Y-canvas coordinate.
+    :param max_column: max X-canvas coordinate.
+    :return: None
+    """
+    abs_frames_path = Path('frames/rocket').absolute()
+    all_frames = Path.iterdir(abs_frames_path)
 
-    for frame in cycle(Path.iterdir(dir_path)):
-        with open(PurePath.joinpath(dir_path, frame), 'r') as spaceship_frame:
+    for frame in cycle(all_frames):
+        with open(PurePath.joinpath(abs_frames_path, frame), 'r') as spaceship_frame:
             file_content = spaceship_frame.read()
 
         rows_direction, columns_direction, space_pressed = read_controls(canvas)
@@ -78,7 +96,15 @@ async def animate_spaceship(canvas, row, column, max_row, max_column):
         await animate_spaceship_tool(canvas, row, column, file_content)
 
 
-async def animate_spaceship_tool(canvas, row, column, file_content):
+async def animate_spaceship_tool(canvas: curses.window, row: int, column: int, file_content: str):
+    """
+    Help animate spaceship frames.
+    :param canvas: place for rendering animation.
+    :param row: Y-canvas coordinate.
+    :param column: X-canvas coordinate.
+    :param file_content: readed content from a file.
+    :return: None
+    """
     draw_frame(canvas, row, column, file_content)
     canvas.refresh()
     await asyncio.sleep(0)
