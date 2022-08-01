@@ -79,7 +79,7 @@ async def animate_spaceship(
     :param column: X-canvas coordinate.
     :param rows_number: height of the window.
     :param columns_number: width of the window.
-    :param frames_content: content of a frame, that reads from txt file.
+    :param frames_content: content of a frames, that reads from txt file.
     :return: None
     """
     for content in cycle(frames_content):
@@ -109,14 +109,17 @@ async def animate_spaceship_tool(canvas: curses.window, row: int, column: int, f
     draw_frame(canvas, row, column, file_content, negative=True)
 
 
-def get_frames_content():
-    """Read content from all files in directory."""
+def get_frames_content() -> list:
+    """
+    Read content from all files in directory.
+    :return: frames_content: content of a frames, that reads from txt file.
+    """
     abs_frames_path = Path('frames/rocket').absolute()
-    all_frames = Path.iterdir(abs_frames_path)
+    frames = Path.iterdir(abs_frames_path)
     frames_content = []
 
-    for frame in all_frames:
-        with open(PurePath.joinpath(abs_frames_path, frame), 'r') as spaceship_frame:
-            frames_content.append(spaceship_frame.read())
+    for frame in frames:
+        with open(PurePath.joinpath(abs_frames_path, frame), 'r') as spaceship:
+            frames_content.append(spaceship.read())
 
     return frames_content
