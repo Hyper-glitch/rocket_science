@@ -70,15 +70,15 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
 async def animate_spaceship(
         canvas: curses.window, row: int, column: int,
-        max_row: int, max_column: int, frames_content: list,
+        rows_number: int, columns_number: int, frames_content: list,
 ) -> None:
     """
     Animate spaceship frames.
     :param canvas: place for rendering animation.
     :param row: Y-canvas coordinate.
     :param column: X-canvas coordinate.
-    :param max_row: max Y-canvas coordinate.
-    :param max_column: max X-canvas coordinate.
+    :param rows_number: height of the window.
+    :param columns_number: width of the window.
     :param frames_content: content of a frame, that reads from txt file.
     :return: None
     """
@@ -86,9 +86,9 @@ async def animate_spaceship(
         rows_direction, columns_direction, space_pressed = read_controls(canvas)
         frame_rows, frame_columns = get_frame_size(content)
 
-        row = min(row + rows_direction, max_row - frame_rows - BORDER_THICKNESS)
+        row = min(row + rows_direction, rows_number - frame_rows - BORDER_THICKNESS)
         row = max(row, BORDER_THICKNESS)
-        column = min(column + columns_direction, max_column - frame_columns - BORDER_THICKNESS)
+        column = min(column + columns_direction, columns_number - frame_columns - BORDER_THICKNESS)
         column = max(column, BORDER_THICKNESS)
 
         await animate_spaceship_tool(canvas, row, column, content)

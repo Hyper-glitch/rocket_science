@@ -14,12 +14,12 @@ def draw(canvas) -> None:
     """
     canvas.border()
     curses.curs_set(False)
-    max_row, max_column = canvas.getmaxyx()
+    rows_number, columns_number = canvas.getmaxyx()  # Return a tuple (y, x) of the height and width of the window.
     coroutines = []
 
     for star in range(STARS_AMOUNT):
-        row = random.randint(0, max_row - BORDER_THICKNESS)
-        column = random.randint(START_RANDINT, max_column - BORDER_THICKNESS)
+        row = random.randint(0, rows_number - BORDER_THICKNESS)
+        column = random.randint(START_RANDINT, columns_number - BORDER_THICKNESS)
         coroutine = blink(
             canvas=canvas, row=row, column=column, symbol=random.choice(STARS_SYMBOLS),
             offset_tics=random.randint(START_RANDINT, DIM_DURATION),
@@ -29,12 +29,12 @@ def draw(canvas) -> None:
     frames_content = get_frames_content()
 
     fire_coroutine = fire(
-        canvas=canvas, start_row=max_row - BORDER_THICKNESS,
-        start_column=max_column - BORDER_THICKNESS, rows_speed=-1,
+        canvas=canvas, start_row=rows_number - BORDER_THICKNESS,
+        start_column=columns_number - BORDER_THICKNESS, rows_speed=-1,
     )
     spaceship_coroutine = animate_spaceship(
-        canvas, row=max_row // 2, column=max_column // 2,
-        max_row=max_row, max_column=max_column, frames_content=frames_content,
+        canvas, row=rows_number // 2, column=columns_number // 2,
+        rows_number=rows_number, columns_number=columns_number, frames_content=frames_content,
     )
 
     coroutines.extend([fire_coroutine, spaceship_coroutine])
