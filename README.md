@@ -10,12 +10,11 @@
 ```bash
 https://github.com/Hyper-glitch/rocket_science.git
 ```
-2. Create **.env** file and set the <ins>environmental variables</ins> as described above.
-3. Create venv
+2. Create venv
 ```bash
 python3 -m venv venv
 ```
-4. Run python script in terminal (tilix or smth like that)
+3. Run python script in terminal (tilix or smth like that)
 ```bash
 python3 main.py
 ```
