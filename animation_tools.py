@@ -1,6 +1,7 @@
 """Module that helps animate stars, fire, spaceship."""
 import asyncio
 import curses
+import time
 from itertools import cycle
 from pathlib import Path, PurePath
 
@@ -90,11 +91,10 @@ async def animate_spaceship(
         row = max(row, BORDER_THICKNESS)
         column = min(column + columns_direction, columns_number - frame_columns - BORDER_THICKNESS)
         column = max(column, BORDER_THICKNESS)
+        await spaceship_animate_tool(canvas, row, column, content)
 
-        await animate_spaceship_tool(canvas, row, column, content)
 
-
-async def animate_spaceship_tool(canvas: curses.window, row: int, column: int, file_content: str):
+async def spaceship_animate_tool(canvas: curses.window, row: int, column: int, file_content: str):
     """
     Help animate spaceship frames.
     :param canvas: place for rendering animation.
@@ -104,8 +104,8 @@ async def animate_spaceship_tool(canvas: curses.window, row: int, column: int, f
     :return: None
     """
     draw_frame(canvas, row, column, file_content)
-    canvas.refresh()
-    await asyncio.sleep(0)
+    for _ in range(2):
+        await asyncio.sleep(0)
     draw_frame(canvas, row, column, file_content, negative=True)
 
 
