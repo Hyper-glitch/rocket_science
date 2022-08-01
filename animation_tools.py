@@ -1,12 +1,11 @@
 """Module that helps animate stars, fire, spaceship."""
 import asyncio
 import curses
-import random
 from itertools import cycle
 from pathlib import Path, PurePath
 
 from curses_tools import draw_frame, read_controls, get_frame_size
-from game_constants import START_RANDINT, DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS
+from game_constants import DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS
 
 
 async def blink(canvas: curses.window, row: int, column: int, symbol: str, offset_tics: int) -> None:
