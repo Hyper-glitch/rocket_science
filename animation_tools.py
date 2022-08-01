@@ -68,7 +68,10 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
         column += columns_speed
 
 
-async def animate_spaceship(canvas: curses.window, row: int, column: int, max_row: int, max_column: int) -> None:
+async def animate_spaceship(
+        canvas: curses.window, row: int, column: int,
+        max_row: int, max_column: int, frames_content: list,
+) -> None:
     """
     Animate spaceship frames.
     :param canvas: place for rendering animation.
@@ -76,24 +79,19 @@ async def animate_spaceship(canvas: curses.window, row: int, column: int, max_ro
     :param column: X-canvas coordinate.
     :param max_row: max Y-canvas coordinate.
     :param max_column: max X-canvas coordinate.
+    :param frames_content: content of a frame, that reads from txt file.
     :return: None
     """
-    abs_frames_path = Path('frames/rocket').absolute()
-    all_frames = Path.iterdir(abs_frames_path)
-
-    for frame in cycle(all_frames):
-        with open(PurePath.joinpath(abs_frames_path, frame), 'r') as spaceship_frame:
-            file_content = spaceship_frame.read()
-
+    for content in cycle(frames_content):
         rows_direction, columns_direction, space_pressed = read_controls(canvas)
-        frame_rows, frame_columns = get_frame_size(file_content)
+        frame_rows, frame_columns = get_frame_size(content)
 
         row = min(row + rows_direction, max_row - frame_rows - BORDER_THICKNESS)
         row = max(row, BORDER_THICKNESS)
         column = min(column + columns_direction, max_column - frame_columns - BORDER_THICKNESS)
         column = max(column, BORDER_THICKNESS)
 
-        await animate_spaceship_tool(canvas, row, column, file_content)
+        await animate_spaceship_tool(canvas, row, column, content)
 
 
 async def animate_spaceship_tool(canvas: curses.window, row: int, column: int, file_content: str):
@@ -109,3 +107,16 @@ async def animate_spaceship_tool(canvas: curses.window, row: int, column: int, f
     canvas.refresh()
     await asyncio.sleep(0)
     draw_frame(canvas, row, column, file_content, negative=True)
+
+
+def get_frames_content():
+    """Read content from all files in directory."""
+    abs_frames_path = Path('frames/rocket').absolute()
+    all_frames = Path.iterdir(abs_frames_path)
+    frames_content = []
+
+    for frame in all_frames:
+        with open(PurePath.joinpath(abs_frames_path, frame), 'r') as spaceship_frame:
+            frames_content.append(spaceship_frame.read())
+
+    return frames_content
