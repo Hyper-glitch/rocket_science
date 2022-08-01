@@ -9,17 +9,18 @@ from curses_tools import draw_frame, read_controls, get_frame_size
 from game_constants import START_RANDINT, DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS
 
 
-async def blink(canvas: curses.window, row: int, column: int, symbol: str) -> None:
+async def blink(canvas: curses.window, row: int, column: int, symbol: str, offset_tics: int) -> None:
     """
     Animate stars blink asynchronously.
     :param canvas: place for rendering animation.
     :param row: Y canvas coordinate.
     :param column: X canvas coordinate.
     :param symbol: symbol for rendering on canvas.
+    :param offset_tics: parameter that control offset tics.
     :return: None
     """
     canvas.addstr(row, column, symbol, curses.A_DIM)
-    for _ in range(random.randint(START_RANDINT, DIM_DURATION)):
+    for _ in range(offset_tics):
         await asyncio.sleep(0)
 
     while True:

@@ -4,7 +4,7 @@ import random
 import time
 
 from animation_tools import fire, blink, animate_spaceship
-from game_constants import TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT
+from game_constants import TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT, DIM_DURATION
 
 
 def draw(canvas) -> None:
@@ -20,7 +20,10 @@ def draw(canvas) -> None:
     for star in range(STARS_AMOUNT):
         row = random.randint(0, max_row - BORDER_THICKNESS)
         column = random.randint(START_RANDINT, max_column - BORDER_THICKNESS)
-        coroutine = blink(canvas=canvas, row=row, column=column, symbol=random.choice(STARS_SYMBOLS))
+        coroutine = blink(
+            canvas=canvas, row=row, column=column, symbol=random.choice(STARS_SYMBOLS),
+            offset_tics=random.randint(START_RANDINT, DIM_DURATION),
+        )
         coroutines.append(coroutine)
 
     fire_coroutine = fire(
@@ -46,5 +49,4 @@ def draw(canvas) -> None:
 
 if __name__ == '__main__':
     curses.update_lines_cols()
-    while True:
-        curses.wrapper(draw)
+    curses.wrapper(draw)
