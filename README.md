@@ -14,7 +14,11 @@ https://github.com/Hyper-glitch/rocket_science.git
 ```bash
 python3 -m venv venv
 ```
-3. Run python script in terminal (tilix or smth like that)
+3. Be in directory with project files
+```bash
+cd ~/.../rocket_science
+```
+4. Run python script in terminal (tilix or smth like that)
 ```bash
 python3 main.py
 ```
