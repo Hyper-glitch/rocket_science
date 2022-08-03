@@ -3,7 +3,7 @@ import curses
 import random
 import time
 
-from animation_tools import fire, blink, animate_spaceship, get_frames_content
+from animation_tools import fire, blink, animate_spaceship, get_frames
 from game_constants import TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT, DIM_DURATION
 
 
@@ -26,7 +26,7 @@ def draw(canvas) -> None:
         )
         coroutines.append(coroutine)
 
-    frames_content = get_frames_content()
+    frames = get_frames()
 
     fire_coroutine = fire(
         canvas=canvas, start_row=rows_number - BORDER_THICKNESS,
@@ -34,7 +34,7 @@ def draw(canvas) -> None:
     )
     spaceship_coroutine = animate_spaceship(
         canvas, row=rows_number // 2, column=columns_number // 2,
-        rows_number=rows_number, columns_number=columns_number, frames_content=frames_content,
+        rows_number=rows_number, columns_number=columns_number, frames=frames,
     )
 
     coroutines.extend([fire_coroutine, spaceship_coroutine])

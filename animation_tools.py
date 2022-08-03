@@ -1,7 +1,6 @@
 """Module that helps animate stars, fire, spaceship."""
 import asyncio
 import curses
-import time
 from itertools import cycle
 from pathlib import Path, PurePath
 
@@ -71,7 +70,7 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
 async def animate_spaceship(
         canvas: curses.window, row: int, column: int,
-        rows_number: int, columns_number: int, frames_content: list,
+        rows_number: int, columns_number: int, frames: list,
 ) -> None:
     """
     Animate spaceship frames.
@@ -80,21 +79,21 @@ async def animate_spaceship(
     :param column: X-canvas coordinate.
     :param rows_number: height of the window.
     :param columns_number: width of the window.
-    :param frames_content: content of a frames, that reads from txt file.
+    :param frames: content, that reads from txt file.
     :return: None
     """
-    for content in cycle(frames_content):
+    for frame in cycle(frames):
         rows_direction, columns_direction, space_pressed = read_controls(canvas)
-        frame_rows, frame_columns = get_frame_size(content)
+        frame_rows, frame_columns = get_frame_size(frame)
 
         row = min(row + rows_direction, rows_number - frame_rows - BORDER_THICKNESS)
         row = max(row, BORDER_THICKNESS)
         column = min(column + columns_direction, columns_number - frame_columns - BORDER_THICKNESS)
         column = max(column, BORDER_THICKNESS)
-        await spaceship_animate_tool(canvas, row, column, content)
+        await animate_frames(canvas, row, column, frame)
 
 
-async def spaceship_animate_tool(canvas: curses.window, row: int, column: int, file_content: str):
+async def animate_frames(canvas: curses.window, row: int, column: int, file_content: str):
     """
     Help animate spaceship frames.
     :param canvas: place for rendering animation.
@@ -109,7 +108,7 @@ async def spaceship_animate_tool(canvas: curses.window, row: int, column: int, f
     draw_frame(canvas, row, column, file_content, negative=True)
 
 
-def get_frames_content() -> list:
+def get_frames() -> list:
     """
     Read content from all files in directory.
     :return: frames_content: content of a frames, that reads from txt file.
