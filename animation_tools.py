@@ -90,22 +90,11 @@ async def animate_spaceship(
         row = max(row, BORDER_THICKNESS)
         column = min(column + columns_direction, columns_number - frame_columns - BORDER_THICKNESS)
         column = max(column, BORDER_THICKNESS)
-        await animate_frames(canvas, row, column, frame)
 
-
-async def animate_frames(canvas: curses.window, row: int, column: int, file_content: str):
-    """
-    Help animate spaceship frames.
-    :param canvas: place for rendering animation.
-    :param row: Y-canvas coordinate.
-    :param column: X-canvas coordinate.
-    :param file_content: readed content from a file.
-    :return: None
-    """
-    draw_frame(canvas, row, column, file_content)
-    for _ in range(2):
-        await asyncio.sleep(0)
-    draw_frame(canvas, row, column, file_content, negative=True)
+        draw_frame(canvas, row, column, frame)
+        for _ in range(2):
+            await asyncio.sleep(0)
+        draw_frame(canvas, row, column, frame, negative=True)
 
 
 def get_frames() -> list:
