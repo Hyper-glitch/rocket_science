@@ -2,7 +2,6 @@
 import asyncio
 import curses
 from itertools import cycle
-from pathlib import Path, PurePath
 
 from curses_tools import draw_frame, read_controls, get_frame_size
 from game_constants import DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS
@@ -19,25 +18,20 @@ async def blink(canvas: curses.window, row: int, column: int, symbol: str, offse
     :return: None
     """
     canvas.addstr(row, column, symbol, curses.A_DIM)
-    for _ in range(offset_tics):
-        await asyncio.sleep(0)
+    await sleep(tics=offset_tics)
 
     while True:
         canvas.addstr(row, column, symbol, curses.A_DIM)
-        for _ in range(DIM_DURATION):
-            await asyncio.sleep(0)
+        await sleep(tics=DIM_DURATION)
 
         canvas.addstr(row, column, symbol)
-        for _ in range(NORMAL_DURATION):
-            await asyncio.sleep(0)
+        await sleep(tics=NORMAL_DURATION)
 
         canvas.addstr(row, column, symbol, curses.A_BOLD)
-        for _ in range(BRIGHT_DURATION):
-            await asyncio.sleep(0)
+        await sleep(tics=BRIGHT_DURATION)
 
         canvas.addstr(row, column, symbol)
-        for _ in range(NORMAL_DURATION):
-            await asyncio.sleep(0)
+        await sleep(tics=NORMAL_DURATION)
 
 
 async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0):
@@ -115,17 +109,6 @@ async def fly_garbage(canvas, column, frame, speed=0.5):
         row += speed
 
 
-def get_frames(path) -> list:
-    """
-    Read content from all files in directory.
-    :return: frames_content: content of frames, that reads from txt file.
-    """
-    abs_dir_path = Path(path).absolute()
-    frames = Path.iterdir(abs_dir_path)
-    frames_content = []
-
-    for frame in frames:
-        with open(PurePath.joinpath(abs_dir_path, frame), 'r') as spaceship:
-            frames_content.append(spaceship.read())
-
-    return frames_content
+async def sleep(tics):
+    for _ in range(tics):
+        await asyncio.sleep(0)
