@@ -3,6 +3,7 @@ import asyncio
 import curses
 from itertools import cycle
 from pathlib import Path, PurePath
+import random
 
 from curses_tools import draw_frame, read_controls, get_frame_size
 from game_constants import DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS
@@ -98,17 +99,34 @@ async def animate_spaceship(
             draw_frame(canvas, row, column, frame, negative=True)
 
 
-def get_frames() -> list:
+async def fly_garbage(canvas, column, frame, speed=0.5):
+    """Animate garbage, flying from top to bottom. Сolumn position will stay same, as specified on start."""
+
+    rows_number, columns_number = canvas.getmaxyx()
+
+    column = max(column, 0)
+    column = min(column, columns_number - 1)
+
+    row = 0
+
+    while row < rows_number:
+        draw_frame(canvas, row, column, frame)
+        await asyncio.sleep(0)
+        draw_frame(canvas, row, column, frame, negative=True)
+        row += speed
+
+
+def get_frames(path) -> list:
     """
     Read content from all files in directory.
-    :return: frames_content: content of a frames, that reads from txt file.
+    :return: frames_content: content of frames, that reads from txt file.
     """
-    abs_frames_path = Path('frames/rocket').absolute()
-    frames = Path.iterdir(abs_frames_path)
+    abs_dir_path = Path(path).absolute()
+    frames = Path.iterdir(abs_dir_path)
     frames_content = []
 
     for frame in frames:
-        with open(PurePath.joinpath(abs_frames_path, frame), 'r') as spaceship:
+        with open(PurePath.joinpath(abs_dir_path, frame), 'r') as spaceship:
             frames_content.append(spaceship.read())
 
     return frames_content
