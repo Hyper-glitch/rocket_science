@@ -3,7 +3,6 @@ import asyncio
 import curses
 from itertools import cycle
 from pathlib import Path, PurePath
-import random
 
 from curses_tools import draw_frame, read_controls, get_frame_size
 from game_constants import DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS
