@@ -1,3 +1,5 @@
+from pathlib import Path, PurePath
+
 SPACE_KEY_CODE = 32
 LEFT_KEY_CODE = 260
 RIGHT_KEY_CODE = 261
@@ -75,3 +77,19 @@ def get_frame_size(text):
     rows = len(lines)
     columns = max([len(line) for line in lines])
     return rows, columns
+
+
+def get_frames(path) -> list:
+    """
+    Read content from all files in directory.
+    :return: frames_content: content of frames, that reads from txt file.
+    """
+    abs_dir_path = Path(path).absolute()
+    frames = Path.iterdir(abs_dir_path)
+    frames_content = []
+
+    for frame in frames:
+        with open(PurePath.joinpath(abs_dir_path, frame), 'r') as spaceship:
+            frames_content.append(spaceship.read())
+
+    return frames_content
