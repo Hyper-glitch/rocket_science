@@ -83,18 +83,19 @@ async def animate_spaceship(
     :return: None
     """
     for frame in cycle(frames):
-        rows_direction, columns_direction, space_pressed = read_controls(canvas)
-        frame_rows, frame_columns = get_frame_size(frame)
 
-        row = min(row + rows_direction, rows_number - frame_rows - BORDER_THICKNESS)
-        row = max(row, BORDER_THICKNESS)
-        column = min(column + columns_direction, columns_number - frame_columns - BORDER_THICKNESS)
-        column = max(column, BORDER_THICKNESS)
-
-        draw_frame(canvas, row, column, frame)
         for _ in range(2):
+            rows_direction, columns_direction, space_pressed = read_controls(canvas)
+            frame_rows, frame_columns = get_frame_size(frame)
+
+            row = min(row + rows_direction, rows_number - frame_rows - BORDER_THICKNESS)
+            row = max(row, BORDER_THICKNESS)
+            column = min(column + columns_direction, columns_number - frame_columns - BORDER_THICKNESS)
+            column = max(column, BORDER_THICKNESS)
+
+            draw_frame(canvas, row, column, frame)
             await asyncio.sleep(0)
-        draw_frame(canvas, row, column, frame, negative=True)
+            draw_frame(canvas, row, column, frame, negative=True)
 
 
 def get_frames() -> list:
