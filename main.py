@@ -1,13 +1,14 @@
 """Module for running main logic of program."""
-import asyncio
 import curses
 import random
 import time
 from pathlib import PurePath, Path
 
-from animation_tools import fire, blink, animate_spaceship, get_frames, fly_garbage
-from curses_tools import get_frame_size
-from game_constants import TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT, DIM_DURATION
+from async_animations import fire, blink, animate_spaceship, fly_garbage, sleep
+from curses_tools import get_frame_size, get_frames
+from game_constants import (
+    TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT, DIM_DURATION, FRAME_RATE,
+)
 
 
 async def fill_orbit_with_garbage(frames, canvas, columns_number):
@@ -16,8 +17,7 @@ async def fill_orbit_with_garbage(frames, canvas, columns_number):
             _, frame_columns = get_frame_size(frame)
             column = random.randint(START_RANDINT, columns_number - frame_columns - BORDER_THICKNESS)
             coroutines.append(fly_garbage(canvas=canvas, frame=frame, column=column))
-            for _ in range(15):
-                await asyncio.sleep(0)
+            await sleep(tics=FRAME_RATE)
 
 
 def draw(canvas) -> None:
