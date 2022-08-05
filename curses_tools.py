@@ -1,10 +1,6 @@
-from pathlib import Path, PurePath
+from pathlib import Path, PurePath, PosixPath
 
-SPACE_KEY_CODE = 32
-LEFT_KEY_CODE = 260
-RIGHT_KEY_CODE = 261
-UP_KEY_CODE = 259
-DOWN_KEY_CODE = 258
+from game_constants import KeyCode
 
 
 def read_controls(canvas):
@@ -20,27 +16,27 @@ def read_controls(canvas):
             # https://docs.python.org/3/library/curses.html#curses.window.getch
             break
 
-        if pressed_key_code == UP_KEY_CODE:
+        if pressed_key_code == KeyCode.UP:
             rows_direction = -1
 
-        if pressed_key_code == DOWN_KEY_CODE:
+        if pressed_key_code == KeyCode.DOWN:
             rows_direction = 1
 
-        if pressed_key_code == RIGHT_KEY_CODE:
+        if pressed_key_code == KeyCode.RIGHT:
             columns_direction = 1
 
-        if pressed_key_code == LEFT_KEY_CODE:
+        if pressed_key_code == KeyCode.LEFT:
             columns_direction = -1
 
-        if pressed_key_code == SPACE_KEY_CODE:
+        if pressed_key_code == KeyCode.SPACE:
             space_pressed = True
-    
+
     return rows_direction, columns_direction, space_pressed
 
 
 def draw_frame(canvas, start_row, start_column, text, negative=False):
     """Draw multiline text fragment on canvas, erase text instead of drawing if negative=True is specified."""
-    
+
     rows_number, columns_number = canvas.getmaxyx()
 
     for row, line in enumerate(text.splitlines(), round(start_row)):
@@ -56,7 +52,7 @@ def draw_frame(canvas, start_row, start_column, text, negative=False):
 
             if column >= columns_number:
                 break
-                
+
             if symbol == ' ':
                 continue
 
@@ -72,14 +68,14 @@ def draw_frame(canvas, start_row, start_column, text, negative=False):
 
 def get_frame_size(text):
     """Calculate size of multiline text fragment, return pair — number of rows and colums."""
-    
+
     lines = text.splitlines()
     rows = len(lines)
     columns = max([len(line) for line in lines])
     return rows, columns
 
 
-def get_frames(path) -> list:
+def get_frames(path: PosixPath) -> list:
     """
     Read content from all files in directory.
     :return: frames_content: content of frames, that reads from txt file.
