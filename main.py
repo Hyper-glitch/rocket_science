@@ -11,7 +11,13 @@ from game_constants import (
 )
 
 
-async def fill_orbit_with_garbage(frames, canvas, columns_number):
+async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_number: int) -> None:
+    """Coroutine that fill orbit with garbage frames chaotically.
+    :param frames: spacehip frames.
+    :param canvas: place for render all animation.
+    :param columns_number: width of the window.
+    :return: None
+    """
     while True:
         for frame in frames:
             _, frame_columns = get_frame_size(frame)
@@ -20,10 +26,10 @@ async def fill_orbit_with_garbage(frames, canvas, columns_number):
             await sleep(tics=FRAME_RATE)
 
 
-def draw(canvas) -> None:
+def draw(canvas: curses.window) -> None:
     """
     This function like event loop, use for register and running tasks.
-    param canvas: place for render all animation.
+    :param canvas: place for render all animation.
     """
     canvas.border()
     curses.curs_set(False)
