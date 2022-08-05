@@ -1,4 +1,4 @@
-"""Module that helps animate stars, fire, spaceship."""
+"""Module that helps animate frames."""
 import asyncio
 import curses
 from itertools import cycle
@@ -110,5 +110,9 @@ async def fly_garbage(canvas, column, frame, speed=0.5):
 
 
 async def sleep(tics):
+    """
+    Custom sleep for make ping in code.
+    :param tics: amount of iterations.
+    """
     for _ in range(tics):
         await asyncio.sleep(0)
