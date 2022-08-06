@@ -16,19 +16,19 @@ def read_controls(canvas):
             # https://docs.python.org/3/library/curses.html#curses.window.getch
             break
 
-        if pressed_key_code == KeyCode.UP:
+        if pressed_key_code == KeyCode.UP.value:
             rows_direction = -1
 
-        if pressed_key_code == KeyCode.DOWN:
+        if pressed_key_code == KeyCode.DOWN.value:
             rows_direction = 1
 
-        if pressed_key_code == KeyCode.RIGHT:
+        if pressed_key_code == KeyCode.RIGHT.value:
             columns_direction = 1
 
-        if pressed_key_code == KeyCode.LEFT:
+        if pressed_key_code == KeyCode.LEFT.value:
             columns_direction = -1
 
-        if pressed_key_code == KeyCode.SPACE:
+        if pressed_key_code == KeyCode.SPACE.value:
             space_pressed = True
 
     return rows_direction, columns_direction, space_pressed
