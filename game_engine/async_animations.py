@@ -7,7 +7,7 @@ from itertools import cycle
 from curses_tools import draw_frame, read_controls, get_frame_size
 from game_constants import DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS, START_RANDINT, FRAME_RATE, \
     CENTRAL_FIRE_OFFSET
-from game_engine.obstacles import Obstacle, show_obstacles
+from game_engine.obstacles import Obstacle
 from game_engine.physics import update_speed
 
 coroutines = []
