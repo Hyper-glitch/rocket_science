@@ -1,5 +1,6 @@
 """Module for running main logic of program."""
 import curses
+import os
 import random
 import time
 from pathlib import PurePath, Path
@@ -35,8 +36,15 @@ def draw(canvas: curses.window) -> None:
     curses.curs_set(False)
     rows_number, columns_number = canvas.getmaxyx()  # Return a tuple (y, x) of the height and width of the window.
     abs_base_path = Path('frames').absolute()
-    spaceship_path = PurePath.joinpath(abs_base_path, 'rocket')
-    garbage_path = PurePath.joinpath(abs_base_path, 'garbage')
+    all_dirs = os.walk(abs_base_path)
+    _, sub_dirs, _ = next(all_dirs)
+    frames = []
+
+    for dir in sub_dirs:
+        frames.append(get_frames(path=PurePath.joinpath(abs_base_path, dir)))
+
+    spaceship_frames = frames[0]
+    garbage_frames = frames[1]
 
     for star in range(STARS_AMOUNT):
         row = random.randint(0, rows_number - BORDER_THICKNESS)
@@ -46,9 +54,6 @@ def draw(canvas: curses.window) -> None:
             offset_tics=random.randint(START_RANDINT, DIM_DURATION),
         )
         coroutines.append(coroutine)
-
-    spaceship_frames = get_frames(path=spaceship_path)
-    garbage_frames = get_frames(path=garbage_path)
 
     fire_coroutine = fire(
         canvas=canvas, start_row=rows_number - BORDER_THICKNESS,

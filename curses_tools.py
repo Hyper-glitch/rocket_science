@@ -75,7 +75,7 @@ def get_frame_size(text):
     return rows, columns
 
 
-def get_frames(path: PosixPath) -> list:
+def get_frames(path: Path) -> list:
     """
     Read content from all files in directory.
     :return: frames_content: content of frames, that reads from txt file.
