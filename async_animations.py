@@ -43,6 +43,7 @@ async def blink(canvas: curses.window, row: int, column: int, symbol: str, offse
 
 async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0):
     """Display frames of gun shot, direction and speed can be specified."""
+
     row, column = start_row, start_column
     canvas.addstr(round(row), round(column), '*')
     await asyncio.sleep(0)
@@ -62,11 +63,15 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
     curses.beep()
 
     while 0 < row < max_row and 0 < column < max_column:
-        canvas.addstr(round(row), round(column), symbol)
-        await asyncio.sleep(0)
-        canvas.addstr(round(row), round(column), ' ')
-        row += rows_speed
-        column += columns_speed
+        for obstacle in obstacles:
+            if obstacle.has_collision(obj_corner_row=row, obj_corner_column=column):
+                return
+        else:
+            canvas.addstr(round(row), round(column), symbol)
+            await asyncio.sleep(0)
+            canvas.addstr(round(row), round(column), ' ')
+            row += rows_speed
+            column += columns_speed
 
 
 async def animate_spaceship(
@@ -146,7 +151,6 @@ async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_n
                 canvas=canvas, frame=frame,
                 column=column, rows=frame_rows, columns=frame_columns,
             ))
-            coroutines.append(show_obstacles(canvas=canvas, obstacles=obstacles))
             await sleep(tics=FRAME_RATE)
 
 
