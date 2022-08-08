@@ -12,6 +12,7 @@ from physics import update_speed
 
 coroutines = []
 obstacles = []
+obstacles_in_last_collisions = []
 
 
 async def blink(canvas: curses.window, row: int, column: int, symbol: str, offset_tics: int) -> None:
@@ -65,6 +66,7 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
     while 0 < row < max_row and 0 < column < max_column:
         for obstacle in obstacles:
             if obstacle.has_collision(obj_corner_row=row, obj_corner_column=column):
+                obstacles_in_last_collisions.append(obstacle)
                 return
         else:
             canvas.addstr(round(row), round(column), symbol)
@@ -129,6 +131,12 @@ async def fly_garbage(canvas, column, frame, rows, columns, speed=0.5):
     obstacles.append(obstacle)
 
     while row < rows_number:
+        for barrier in obstacles_in_last_collisions:
+            if barrier.has_collision(obj_corner_row=row, obj_corner_column=column):
+                obstacles_in_last_collisions.remove(barrier)
+                obstacles.remove(obstacle)
+                return
+
         draw_frame(canvas, row, column, frame)
         await asyncio.sleep(0)
         draw_frame(canvas, row, column, frame, negative=True)
@@ -151,6 +159,7 @@ async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_n
                 canvas=canvas, frame=frame,
                 column=column, rows=frame_rows, columns=frame_columns,
             ))
+            coroutines.append(show_obstacles(canvas, obstacles))
             await sleep(tics=FRAME_RATE)
 
 
