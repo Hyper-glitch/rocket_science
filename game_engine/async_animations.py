@@ -7,6 +7,7 @@ from itertools import cycle
 from curses_tools import draw_frame, read_controls, get_frame_size
 from game_constants import DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS, START_RANDINT, FRAME_RATE, \
     CENTRAL_FIRE_OFFSET
+from game_engine.explosion import explode
 from game_engine.obstacles import Obstacle
 from game_engine.physics import update_speed
 
@@ -135,6 +136,7 @@ async def fly_garbage(canvas, column, frame, rows, columns, speed=0.5):
             if barrier.has_collision(obj_corner_row=row, obj_corner_column=column):
                 obstacles_in_last_collisions.remove(barrier)
                 obstacles.remove(obstacle)
+                await explode(canvas, center_row=row + rows // 2, center_column=column + columns // 2)
                 return
 
         draw_frame(canvas, row, column, frame)
