@@ -30,6 +30,7 @@ def draw(canvas: curses.window) -> None:
 
     spaceship_frames = frames[0]
     garbage_frames = frames[1]
+    game_over_frame = frames[2][0]
 
     for star in range(STARS_AMOUNT):
         row = random.randint(0, rows_number - BORDER_THICKNESS)
@@ -41,8 +42,8 @@ def draw(canvas: curses.window) -> None:
         coroutines.append(coroutine)
 
     spaceship_coroutine = animate_spaceship(
-        canvas=canvas, row=rows_number // 2, column=columns_number // 2,
-        rows_number=rows_number, columns_number=columns_number, frames=spaceship_frames,
+        canvas=canvas,
+        rows_number=rows_number, columns_number=columns_number, frames=spaceship_frames, game_over=game_over_frame,
     )
     garbage_coroutine = fill_orbit_with_garbage(canvas=canvas, frames=garbage_frames, columns_number=columns_number)
     coroutines.extend([spaceship_coroutine, garbage_coroutine])

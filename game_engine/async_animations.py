@@ -78,19 +78,19 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
 
 async def animate_spaceship(
-        canvas: curses.window, row: int, column: int,
-        rows_number: int, columns_number: int, frames: list,
+        canvas: curses.window,
+        rows_number: int, columns_number: int, frames: list, game_over: str,
 ) -> None:
     """
     Animate spaceship frames.
     :param canvas: place for rendering animation.
-    :param row: Y-canvas coordinate.
-    :param column: X-canvas coordinate.
     :param rows_number: height of the window.
     :param columns_number: width of the window.
     :param frames: content, that reads from txt file.
     :return: None
     """
+    row = rows_number // 2
+    column = columns_number // 2
 
     for frame in cycle(frames):
 
@@ -112,6 +112,11 @@ async def animate_spaceship(
                 row_speed=row_speed, column_speed=column_speed, rows_direction=rows_direction,
                 columns_direction=columns_direction,
             )
+
+            for obstacle in obstacles:
+                if obstacle.has_collision(obj_corner_row=row, obj_corner_column=column):
+                    await show_gameover(canvas=canvas, frame=game_over)
+                    return
 
             draw_frame(canvas, row + row_speed, column + column_speed, frame)
             await asyncio.sleep(0)
@@ -165,6 +170,13 @@ async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_n
                 column=column, rows=frame_rows, columns=frame_columns,
             ))
             await sleep(tics=FRAME_RATE)
+
+
+async def show_gameover(canvas, frame, row=15, column=35):
+    while True:
+        draw_frame(canvas, row, column, frame)
+        await asyncio.sleep(0)
+        draw_frame(canvas, row, column, frame, negative=True)
 
 
 async def sleep(tics):
