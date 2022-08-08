@@ -132,11 +132,14 @@ async def fly_garbage(canvas, column, frame, rows, columns, speed=0.5):
     obstacles.append(obstacle)
 
     while row < rows_number:
+        center_row = row + rows // 2
+        center_column = column + columns // 2
+
         for barrier in obstacles_in_last_collisions:
             if barrier.has_collision(obj_corner_row=row, obj_corner_column=column):
                 obstacles_in_last_collisions.remove(barrier)
                 obstacles.remove(obstacle)
-                await explode(canvas, center_row=row + rows // 2, center_column=column + columns // 2)
+                await explode(canvas, center_row=center_row, center_column=center_column)
                 return
 
         draw_frame(canvas, row, column, frame)
