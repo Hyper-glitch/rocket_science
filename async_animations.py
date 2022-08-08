@@ -7,8 +7,8 @@ from itertools import cycle
 from curses_tools import draw_frame, read_controls, get_frame_size
 from game_constants import DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS, START_RANDINT, FRAME_RATE, \
     CENTRAL_FIRE_OFFSET
-from obstacles import Obstacle, show_obstacles
-from physics import update_speed
+from game_engine.obstacles import Obstacle, show_obstacles
+from game_engine.physics import update_speed
 
 coroutines = []
 obstacles = []
@@ -159,7 +159,6 @@ async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_n
                 canvas=canvas, frame=frame,
                 column=column, rows=frame_rows, columns=frame_columns,
             ))
-            coroutines.append(show_obstacles(canvas, obstacles))
             await sleep(tics=FRAME_RATE)
 
 
