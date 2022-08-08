@@ -120,9 +120,10 @@ async def fly_garbage(canvas, column, frame, rows, columns, speed=0.5):
 
     row = 0
 
+    obstacle = Obstacle(row=row, column=column, rows_size=rows, columns_size=columns)
+    obstacles.append(obstacle)
+
     while row < rows_number:
-        obstacle = Obstacle(row=row, column=column, rows_size=rows, columns_size=columns)
-        obstacles.append(obstacle)
         draw_frame(canvas, row, column, frame)
         await asyncio.sleep(0)
         draw_frame(canvas, row, column, frame, negative=True)
@@ -145,6 +146,7 @@ async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_n
                 canvas=canvas, frame=frame,
                 column=column, rows=frame_rows, columns=frame_columns,
             ))
+            coroutines.append(show_obstacles(canvas=canvas, obstacles=obstacles))
             await sleep(tics=FRAME_RATE)
 
 

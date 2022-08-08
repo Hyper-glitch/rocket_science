@@ -47,7 +47,6 @@ def draw(canvas: curses.window) -> None:
     )
     garbage_coroutine = fill_orbit_with_garbage(canvas=canvas, frames=garbage_frames, columns_number=columns_number)
     coroutines.extend([spaceship_coroutine, garbage_coroutine])
-    coroutines.append(show_obstacles(canvas=canvas, obstacles=obstacles))
 
     while True:
         for coroutine in coroutines.copy():
