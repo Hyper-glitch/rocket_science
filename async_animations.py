@@ -1,11 +1,15 @@
 """Module that helps animate frames."""
 import asyncio
 import curses
+import random
 from itertools import cycle
 
 from curses_tools import draw_frame, read_controls, get_frame_size
-from game_constants import DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS
+from game_constants import DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS, START_RANDINT, FRAME_RATE, \
+    CENTRAL_FIRE_OFFSET
 from physics import update_speed
+
+coroutines = []
 
 
 async def blink(canvas: curses.window, row: int, column: int, symbol: str, offset_tics: int) -> None:
@@ -77,6 +81,7 @@ async def animate_spaceship(
     :param frames: content, that reads from txt file.
     :return: None
     """
+
     for frame in cycle(frames):
 
         for _ in range(2):
@@ -88,11 +93,16 @@ async def animate_spaceship(
             row = max(row, BORDER_THICKNESS)
             column = min(column + columns_direction, columns_number - frame_columns - BORDER_THICKNESS)
             column = max(column, BORDER_THICKNESS)
+            fire_column = column + CENTRAL_FIRE_OFFSET
+
+            if space_pressed:
+                coroutines.append(fire(canvas=canvas, start_row=row, start_column=fire_column, rows_speed=-1))
 
             row_speed, column_speed = update_speed(
                 row_speed=row_speed, column_speed=column_speed, rows_direction=rows_direction,
                 columns_direction=columns_direction,
             )
+
             draw_frame(canvas, row + row_speed, column + column_speed, frame)
             await asyncio.sleep(0)
             draw_frame(canvas, row + row_speed, column + column_speed, frame, negative=True)
@@ -113,6 +123,21 @@ async def fly_garbage(canvas, column, frame, speed=0.5):
         await asyncio.sleep(0)
         draw_frame(canvas, row, column, frame, negative=True)
         row += speed
+
+
+async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_number: int) -> None:
+    """Coroutine that fill orbit with garbage frames chaotically.
+    :param frames: spacehip frames.
+    :param canvas: place for render all animation.
+    :param columns_number: width of the window.
+    :return: None
+    """
+    while True:
+        for frame in frames:
+            _, frame_columns = get_frame_size(frame)
+            column = random.randint(START_RANDINT, columns_number - frame_columns - BORDER_THICKNESS)
+            coroutines.append(fly_garbage(canvas=canvas, frame=frame, column=column))
+            await sleep(tics=FRAME_RATE)
 
 
 async def sleep(tics):
