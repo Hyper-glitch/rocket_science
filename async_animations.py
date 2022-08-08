@@ -5,6 +5,7 @@ from itertools import cycle
 
 from curses_tools import draw_frame, read_controls, get_frame_size
 from game_constants import DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS
+from physics import update_speed
 
 
 async def blink(canvas: curses.window, row: int, column: int, symbol: str, offset_tics: int) -> None:
@@ -79,6 +80,7 @@ async def animate_spaceship(
     for frame in cycle(frames):
 
         for _ in range(2):
+            row_speed = column_speed = 0
             rows_direction, columns_direction, space_pressed = read_controls(canvas)
             frame_rows, frame_columns = get_frame_size(frame)
 
@@ -87,9 +89,13 @@ async def animate_spaceship(
             column = min(column + columns_direction, columns_number - frame_columns - BORDER_THICKNESS)
             column = max(column, BORDER_THICKNESS)
 
-            draw_frame(canvas, row, column, frame)
+            row_speed, column_speed = update_speed(
+                row_speed=row_speed, column_speed=column_speed, rows_direction=rows_direction,
+                columns_direction=columns_direction,
+            )
+            draw_frame(canvas, row + row_speed, column + column_speed, frame)
             await asyncio.sleep(0)
-            draw_frame(canvas, row, column, frame, negative=True)
+            draw_frame(canvas, row + row_speed, column + column_speed, frame, negative=True)
 
 
 async def fly_garbage(canvas, column, frame, speed=0.5):
