@@ -7,9 +7,11 @@ from itertools import cycle
 from curses_tools import draw_frame, read_controls, get_frame_size
 from game_constants import DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS, START_RANDINT, FRAME_RATE, \
     CENTRAL_FIRE_OFFSET
+from obstacles import Obstacle, show_obstacles
 from physics import update_speed
 
 coroutines = []
+obstacles = []
 
 
 async def blink(canvas: curses.window, row: int, column: int, symbol: str, offset_tics: int) -> None:
@@ -108,7 +110,7 @@ async def animate_spaceship(
             draw_frame(canvas, row + row_speed, column + column_speed, frame, negative=True)
 
 
-async def fly_garbage(canvas, column, frame, speed=0.5):
+async def fly_garbage(canvas, column, frame, rows, columns, speed=0.5):
     """Animate garbage, flying from top to bottom. Сolumn position will stay same, as specified on start."""
 
     rows_number, columns_number = canvas.getmaxyx()
@@ -119,10 +121,13 @@ async def fly_garbage(canvas, column, frame, speed=0.5):
     row = 0
 
     while row < rows_number:
+        obstacle = Obstacle(row=row, column=column, rows_size=rows, columns_size=columns)
+        obstacles.append(obstacle)
         draw_frame(canvas, row, column, frame)
         await asyncio.sleep(0)
         draw_frame(canvas, row, column, frame, negative=True)
         row += speed
+        obstacle.row += speed
 
 
 async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_number: int) -> None:
@@ -134,9 +139,12 @@ async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_n
     """
     while True:
         for frame in frames:
-            _, frame_columns = get_frame_size(frame)
+            frame_rows, frame_columns = get_frame_size(frame)
             column = random.randint(START_RANDINT, columns_number - frame_columns - BORDER_THICKNESS)
-            coroutines.append(fly_garbage(canvas=canvas, frame=frame, column=column))
+            coroutines.append(fly_garbage(
+                canvas=canvas, frame=frame,
+                column=column, rows=frame_rows, columns=frame_columns,
+            ))
             await sleep(tics=FRAME_RATE)
 
 
