@@ -5,26 +5,9 @@ import random
 import time
 from pathlib import PurePath, Path
 
-from async_animations import fire, blink, animate_spaceship, fly_garbage, sleep
-from curses_tools import get_frame_size, get_frames
-from game_constants import (
-    TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT, DIM_DURATION, FRAME_RATE,
-)
-
-
-async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_number: int) -> None:
-    """Coroutine that fill orbit with garbage frames chaotically.
-    :param frames: spacehip frames.
-    :param canvas: place for render all animation.
-    :param columns_number: width of the window.
-    :return: None
-    """
-    while True:
-        for frame in frames:
-            _, frame_columns = get_frame_size(frame)
-            column = random.randint(START_RANDINT, columns_number - frame_columns - BORDER_THICKNESS)
-            coroutines.append(fly_garbage(canvas=canvas, frame=frame, column=column))
-            await sleep(tics=FRAME_RATE)
+from async_animations import blink, animate_spaceship, fill_orbit_with_garbage
+from curses_tools import get_frames
+from game_constants import TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT, DIM_DURATION
 
 
 def draw(canvas: curses.window) -> None:
@@ -32,6 +15,8 @@ def draw(canvas: curses.window) -> None:
     This function like event loop, use for register and running tasks.
     :param canvas: place for render all animation.
     """
+    from async_animations import coroutines
+
     canvas.border()
     curses.curs_set(False)
     rows_number, columns_number = canvas.getmaxyx()  # Return a tuple (y, x) of the height and width of the window.
@@ -55,16 +40,12 @@ def draw(canvas: curses.window) -> None:
         )
         coroutines.append(coroutine)
 
-    fire_coroutine = fire(
-        canvas=canvas, start_row=rows_number - BORDER_THICKNESS,
-        start_column=columns_number - BORDER_THICKNESS, rows_speed=-1,
-    )
     spaceship_coroutine = animate_spaceship(
         canvas=canvas, row=rows_number // 2, column=columns_number // 2,
         rows_number=rows_number, columns_number=columns_number, frames=spaceship_frames,
     )
     garbage_coroutine = fill_orbit_with_garbage(canvas=canvas, frames=garbage_frames, columns_number=columns_number)
-    coroutines.extend([fire_coroutine, spaceship_coroutine, garbage_coroutine])
+    coroutines.extend([spaceship_coroutine, garbage_coroutine])
 
     while True:
         for coroutine in coroutines.copy():
@@ -79,6 +60,5 @@ def draw(canvas: curses.window) -> None:
 
 
 if __name__ == '__main__':
-    coroutines = []
     curses.update_lines_cols()
     curses.wrapper(draw)
