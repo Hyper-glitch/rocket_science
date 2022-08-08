@@ -1,4 +1,4 @@
-from pathlib import Path, PurePath, PosixPath
+from pathlib import Path, PurePath
 
 from game_constants import KeyCode
 
