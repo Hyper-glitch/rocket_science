@@ -8,7 +8,7 @@ from curses_tools import draw_frame, read_controls, get_frame_size
 from engine.explosion import explode
 from engine.obstacles import Obstacle
 from engine.physics import update_speed
-from engine.scenario import get_garbage_delay_tics
+from engine.scenario import get_garbage_delay_tics, PHRASES
 from game_constants import (
     DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS, START_RANDINT, CENTRAL_FIRE_OFFSET,
     YEAR_INCREASE_DURATION, YEAR_INCREASE_VALUE,
@@ -165,7 +165,7 @@ async def fly_garbage(canvas, column, frame, rows, columns, speed=0.5):
         obstacle.row += speed
 
 
-async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_number: int) -> None:
+async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_number: int, subwindow) -> None:
     """Coroutine that fill orbit with garbage frames chaotically.
     :param frames: spacehip frames.
     :param canvas: place for render all animation.
@@ -177,7 +177,7 @@ async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_n
             frame_rows, frame_columns = get_frame_size(frame)
             column = random.randint(START_RANDINT, columns_number - frame_columns - BORDER_THICKNESS)
             coroutines.append(fly_garbage(
-                canvas=canvas, frame=frame,
+                canvas=canvas, frame=frame, subwindow=subwindow,
                 column=column, rows=frame_rows, columns=frame_columns,
             ))
             await sleep(tics=get_garbage_delay_tics(year))
@@ -202,9 +202,19 @@ async def sleep(tics):
         await asyncio.sleep(0)
 
 
-async def count_year():
+async def count_year(subwindow):
     """ """
+    global year
+
     while True:
-        global year
+        coroutines.append(show_year(subwindow))
         await sleep(YEAR_INCREASE_DURATION)
         year += YEAR_INCREASE_VALUE
+
+
+async def show_year(subwindow):
+    global year
+
+    while True:
+        subwindow.addstr(0, 0, f'{year}: {PHRASES.get(year, "")}')
+        await asyncio.sleep(0)
