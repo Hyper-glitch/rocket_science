@@ -39,13 +39,14 @@ def draw(canvas: curses.window) -> None:
             offset_tics=random.randint(START_RANDINT, DIM_DURATION),
         )
         coroutines.append(coroutine)
-
+    year_count_cor = count_year()
+    show_year_cor = show_year(subwindow)
     spaceship_coroutine = animate_spaceship(
         canvas=canvas,
         rows_number=rows_number, columns_number=columns_number, frames=spaceship_frames, game_over=game_over_frame,
     )
     garbage_coroutine = fill_orbit_with_garbage(canvas=canvas, frames=garbage_frames, columns_number=columns_number, subwindow=subwindow)
-    coroutines.extend([count_year(subwindow), spaceship_coroutine, garbage_coroutine])
+    coroutines.extend([year_count_cor, show_year_cor, spaceship_coroutine, garbage_coroutine])
 
     while True:
         for coroutine in coroutines.copy():
