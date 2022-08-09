@@ -47,10 +47,15 @@ async def blink(canvas: curses.window, row: int, column: int, symbol: str, offse
         await sleep(tics=NORMAL_DURATION)
 
 
-async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0):
+async def fire(
+        canvas: curses.window, start_row: int, start_column: int, rows_speed: int = -0.3, columns_speed: int = 0,
+) -> None:
     """Display frames of gun shot, direction and speed can be specified.
     :param canvas: place for rendering animation.
-
+    :param start_row: row where is fire starts.
+    :param start_column: column where is fire starts.
+    :param rows_speed: row offset coordinate.
+    :param columns_speed: column offset coordinate.
     """
 
     row, column = start_row, start_column
@@ -85,8 +90,7 @@ async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0
 
 
 async def animate_spaceship(
-        canvas: curses.window,
-        rows_number: int, columns_number: int, frames: list, game_over: str,
+        canvas: curses.window, rows_number: int, columns_number: int, frames: list, game_over: str,
 ) -> None:
     """
     Animate spaceship frames.
@@ -94,6 +98,7 @@ async def animate_spaceship(
     :param rows_number: height of the window.
     :param columns_number: width of the window.
     :param frames: content, that reads from txt file.
+    :param game_over: content, that reads from game_over.txt file.
     :return: None
     """
     row = rows_number // 2
@@ -131,10 +136,14 @@ async def animate_spaceship(
             draw_frame(canvas, row + row_speed, column + column_speed, frame, negative=True)
 
 
-async def fly_garbage(canvas, column, frame, rows, columns, speed=0.5):
+async def fly_garbage(canvas: curses.window, column: int, frame: str, rows: int, columns: int, speed: int = 0.5):
     """Animate garbage, flying from top to bottom. Сolumn position will stay same, as specified on start.
     :param canvas: place for rendering animation.
-
+    :param column: X canvas coordinate.
+    :param frame: content, that reads from txt file.
+    :param rows: rows amount of current object.
+    :param columns: columns amount of current object.
+    :param speed: row offset coordinate.
     """
 
     rows_number, columns_number = canvas.getmaxyx()
@@ -165,7 +174,7 @@ async def fly_garbage(canvas, column, frame, rows, columns, speed=0.5):
         obstacle.row += speed
 
 
-async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_number: int, subwindow) -> None:
+async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_number: int) -> None:
     """Coroutine that fill orbit with garbage frames chaotically.
     :param frames: spacehip frames.
     :param canvas: place for render all animation.
@@ -177,15 +186,17 @@ async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_n
             frame_rows, frame_columns = get_frame_size(frame)
             column = random.randint(START_RANDINT, columns_number - frame_columns - BORDER_THICKNESS)
             coroutines.append(fly_garbage(
-                canvas=canvas, frame=frame, subwindow=subwindow,
-                column=column, rows=frame_rows, columns=frame_columns,
+                canvas=canvas, frame=frame, column=column, rows=frame_rows, columns=frame_columns,
             ))
             await sleep(tics=get_garbage_delay_tics(year))
 
 
-async def show_gameover(canvas, frame, row=15, column=35):
-    """
-
+async def show_gameover(canvas: curses.window, frame: str, row: int = 15, column: int = 35):
+    """Render content from game_over.txt file on the screen.
+    :param canvas: place for render all animation.
+    :param frame: content, that reads from txt file.
+    :param row: Y canvas coordinate.
+    :param column: X canvas coordinate.
     """
     while True:
         draw_frame(canvas, row, column, frame)
@@ -202,17 +213,19 @@ async def sleep(tics):
         await asyncio.sleep(0)
 
 
-async def count_year(subwindow):
-    """ """
+async def count_year():
+    """Increase a year during the game."""
     global year
 
     while True:
-        coroutines.append(show_year(subwindow))
         await sleep(YEAR_INCREASE_DURATION)
         year += YEAR_INCREASE_VALUE
 
 
-async def show_year(subwindow):
+async def show_year(subwindow: curses.window):
+    """Render a year on the screen.
+    :param subwindow: obj for render a year on the screen.
+    """
     global year
 
     while True:
