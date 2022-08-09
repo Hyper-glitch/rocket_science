@@ -204,7 +204,7 @@ async def show_gameover(canvas: curses.window, frame: str, row: int = 15, column
         draw_frame(canvas, row, column, frame, negative=True)
 
 
-async def sleep(tics):
+async def sleep(tics: int):
     """
     Custom sleep for make ping in code.
     :param tics: amount of iterations.
