@@ -16,7 +16,7 @@ def draw(canvas: curses.window) -> None:
     :param canvas: place for render all animation.
     """
     canvas.border()
-    subwindow = canvas.derwin(0, 0)
+    sub_window = canvas.derwin(0, 0)
     curses.curs_set(False)
     rows_number, columns_number = canvas.getmaxyx()  # Return a tuple (y, x) of the height and width of the window.
     abs_base_path = Path('frames').absolute()
@@ -24,8 +24,8 @@ def draw(canvas: curses.window) -> None:
     _, sub_dirs, _ = next(all_dirs)
     frames = []
 
-    for dir in sub_dirs:
-        frames.append(get_frames(path=PurePath.joinpath(abs_base_path, dir)))
+    for directory in sub_dirs:
+        frames.append(get_frames(path=PurePath.joinpath(abs_base_path, directory)))
 
     spaceship_frames = frames[0]
     garbage_frames = frames[1]
@@ -39,8 +39,9 @@ def draw(canvas: curses.window) -> None:
             offset_tics=random.randint(START_RANDINT, DIM_DURATION),
         )
         coroutines.append(coroutine)
+
     year_count_cor = count_year()
-    show_year_cor = show_year(subwindow)
+    show_year_cor = show_year(sub_window)
     spaceship_coroutine = animate_spaceship(
         canvas=canvas,
         rows_number=rows_number, columns_number=columns_number, frames=spaceship_frames, game_over=game_over_frame,
