@@ -15,7 +15,7 @@ PHRASES = {
 
 def get_garbage_delay_tics(year):
     if year < 1961:
-        return None
+        return 100
     elif year < 1969:
         return 20
     elif year < 1981:
