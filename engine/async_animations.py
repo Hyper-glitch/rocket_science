@@ -5,15 +5,19 @@ import random
 from itertools import cycle
 
 from curses_tools import draw_frame, read_controls, get_frame_size
-from game_constants import DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS, START_RANDINT, FRAME_RATE, \
-    CENTRAL_FIRE_OFFSET
 from engine.explosion import explode
 from engine.obstacles import Obstacle
 from engine.physics import update_speed
+from engine.scenario import get_garbage_delay_tics
+from game_constants import (
+    DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS, START_RANDINT, FRAME_RATE, CENTRAL_FIRE_OFFSET,
+)
+
 
 coroutines = []
 obstacles = []
 obstacles_in_last_collisions = []
+year = 1957
 
 
 async def blink(canvas: curses.window, row: int, column: int, symbol: str, offset_tics: int) -> None:
@@ -44,7 +48,10 @@ async def blink(canvas: curses.window, row: int, column: int, symbol: str, offse
 
 
 async def fire(canvas, start_row, start_column, rows_speed=-0.3, columns_speed=0):
-    """Display frames of gun shot, direction and speed can be specified."""
+    """Display frames of gun shot, direction and speed can be specified.
+    :param canvas: place for rendering animation.
+
+    """
 
     row, column = start_row, start_column
     canvas.addstr(round(row), round(column), '*')
@@ -124,7 +131,10 @@ async def animate_spaceship(
 
 
 async def fly_garbage(canvas, column, frame, rows, columns, speed=0.5):
-    """Animate garbage, flying from top to bottom. Сolumn position will stay same, as specified on start."""
+    """Animate garbage, flying from top to bottom. Сolumn position will stay same, as specified on start.
+    :param canvas: place for rendering animation.
+
+    """
 
     rows_number, columns_number = canvas.getmaxyx()
 
@@ -169,10 +179,14 @@ async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_n
                 canvas=canvas, frame=frame,
                 column=column, rows=frame_rows, columns=frame_columns,
             ))
-            await sleep(tics=FRAME_RATE)
+            tics = get_garbage_delay_tics(year)
+            await sleep(tics=tics)
 
 
 async def show_gameover(canvas, frame, row=15, column=35):
+    """
+
+    """
     while True:
         draw_frame(canvas, row, column, frame)
         await asyncio.sleep(0)
@@ -186,3 +200,10 @@ async def sleep(tics):
     """
     for _ in range(tics):
         await asyncio.sleep(0)
+
+
+async def count_game_duration(year):
+    """ """
+    while True:
+        await sleep(10)
+        year += 1
