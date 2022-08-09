@@ -7,7 +7,7 @@ from pathlib import PurePath, Path
 
 from curses_tools import get_frames
 from game_constants import TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT, DIM_DURATION
-from game_engine.async_animations import blink, animate_spaceship, fill_orbit_with_garbage
+from engine.async_animations import blink, animate_spaceship, fill_orbit_with_garbage
 
 
 def draw(canvas: curses.window) -> None:
@@ -15,7 +15,7 @@ def draw(canvas: curses.window) -> None:
     This function like event loop, use for register and running tasks.
     :param canvas: place for render all animation.
     """
-    from game_engine.async_animations import coroutines
+    from engine.async_animations import coroutines
 
     canvas.border()
     curses.curs_set(False)
