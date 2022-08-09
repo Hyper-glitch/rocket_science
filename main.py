@@ -7,7 +7,7 @@ from pathlib import PurePath, Path
 
 from curses_tools import get_frames
 from game_constants import TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT, DIM_DURATION
-from engine.async_animations import blink, animate_spaceship, fill_orbit_with_garbage
+from engine.async_animations import blink, animate_spaceship, fill_orbit_with_garbage, count_game_duration, coroutines, year
 
 
 def draw(canvas: curses.window) -> None:
@@ -15,8 +15,6 @@ def draw(canvas: curses.window) -> None:
     This function like event loop, use for register and running tasks.
     :param canvas: place for render all animation.
     """
-    from engine.async_animations import coroutines
-
     canvas.border()
     curses.curs_set(False)
     rows_number, columns_number = canvas.getmaxyx()  # Return a tuple (y, x) of the height and width of the window.
@@ -41,12 +39,13 @@ def draw(canvas: curses.window) -> None:
         )
         coroutines.append(coroutine)
 
+    timer_coroutine = count_game_duration(year=year)
     spaceship_coroutine = animate_spaceship(
         canvas=canvas,
         rows_number=rows_number, columns_number=columns_number, frames=spaceship_frames, game_over=game_over_frame,
     )
     garbage_coroutine = fill_orbit_with_garbage(canvas=canvas, frames=garbage_frames, columns_number=columns_number)
-    coroutines.extend([spaceship_coroutine, garbage_coroutine])
+    coroutines.extend([timer_coroutine, spaceship_coroutine, garbage_coroutine])
 
     while True:
         for coroutine in coroutines.copy():
