@@ -23,4 +23,4 @@ cd ~/.../rocket_science
 python3 main.py
 ```
 5. How code works
-<a href="https://asciinema.org/a/rsZugQ8fabVBoo6CR9ATvuzyr" target="_blank"><img src="https://asciinema.org/a/0n7lfwszFYz5Czch7OVpW5Amn.svg" /></a>
+<a href="https://asciinema.org/a/yAldNwT0PEAPVZUlo42Zi1HPk" target="_blank"><img src="https://asciinema.org/a/0n7lfwszFYz5Czch7OVpW5Amn.svg" /></a>
