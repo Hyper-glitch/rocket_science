@@ -45,7 +45,7 @@ def draw(canvas: curses.window) -> None:
         canvas=canvas,
         rows_number=rows_number, columns_number=columns_number, frames=spaceship_frames, game_over=game_over_frame,
     )
-    garbage_coroutine = fill_orbit_with_garbage(canvas=canvas, frames=garbage_frames, columns_number=columns_number, subwindow=subwindow)
+    garbage_coroutine = fill_orbit_with_garbage(canvas=canvas, frames=garbage_frames, columns_number=columns_number)
     coroutines.extend([year_count_cor, show_year_cor, spaceship_coroutine, garbage_coroutine])
 
     while True:
