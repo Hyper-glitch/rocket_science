@@ -6,7 +6,7 @@ import time
 from pathlib import PurePath, Path
 
 from curses_tools import get_frames
-from engine.async_animations import blink, animate_spaceship, fill_orbit_with_garbage, count_year, coroutines
+from engine.async_animations import blink, animate_spaceship, fill_orbit_with_garbage, count_year, coroutines, show_year
 from game_constants import TIC_TIMEOUT, STARS_AMOUNT, STARS_SYMBOLS, BORDER_THICKNESS, START_RANDINT, DIM_DURATION
 
 
@@ -16,6 +16,7 @@ def draw(canvas: curses.window) -> None:
     :param canvas: place for render all animation.
     """
     canvas.border()
+    subwindow = canvas.derwin(0, 0)
     curses.curs_set(False)
     rows_number, columns_number = canvas.getmaxyx()  # Return a tuple (y, x) of the height and width of the window.
     abs_base_path = Path('frames').absolute()
@@ -39,13 +40,12 @@ def draw(canvas: curses.window) -> None:
         )
         coroutines.append(coroutine)
 
-    year_counter_coroutine = count_year()
     spaceship_coroutine = animate_spaceship(
         canvas=canvas,
         rows_number=rows_number, columns_number=columns_number, frames=spaceship_frames, game_over=game_over_frame,
     )
-    garbage_coroutine = fill_orbit_with_garbage(canvas=canvas, frames=garbage_frames, columns_number=columns_number)
-    coroutines.extend([year_counter_coroutine, spaceship_coroutine, garbage_coroutine])
+    garbage_coroutine = fill_orbit_with_garbage(canvas=canvas, frames=garbage_frames, columns_number=columns_number, subwindow=subwindow)
+    coroutines.extend([count_year(subwindow), spaceship_coroutine, garbage_coroutine])
 
     while True:
         for coroutine in coroutines.copy():
