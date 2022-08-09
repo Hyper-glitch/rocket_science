@@ -10,9 +10,9 @@ from engine.obstacles import Obstacle
 from engine.physics import update_speed
 from engine.scenario import get_garbage_delay_tics
 from game_constants import (
-    DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS, START_RANDINT, FRAME_RATE, CENTRAL_FIRE_OFFSET,
+    DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS, START_RANDINT, CENTRAL_FIRE_OFFSET,
+    YEAR_INCREASE_DURATION, YEAR_INCREASE_VALUE,
 )
-
 
 coroutines = []
 obstacles = []
@@ -206,5 +206,5 @@ async def count_year():
     """ """
     while True:
         global year
-        await sleep(30)
-        year += 1
+        await sleep(YEAR_INCREASE_DURATION)
+        year += YEAR_INCREASE_VALUE
