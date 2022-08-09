@@ -11,7 +11,7 @@ from engine.physics import update_speed
 from engine.scenario import get_garbage_delay_tics, PHRASES
 from game_constants import (
     DIM_DURATION, NORMAL_DURATION, BRIGHT_DURATION, BORDER_THICKNESS, START_RANDINT, CENTRAL_FIRE_OFFSET,
-    YEAR_INCREASE_DURATION, YEAR_INCREASE_VALUE,
+    YEAR_INCREASE_DURATION, YEAR_INCREASE_VALUE, GUN_APPEARED_YEAR,
 )
 
 coroutines = []
@@ -117,7 +117,8 @@ async def animate_spaceship(
             column = max(column, BORDER_THICKNESS)
             fire_column = column + CENTRAL_FIRE_OFFSET
 
-            if space_pressed:
+            has_gun = year == GUN_APPEARED_YEAR
+            if space_pressed and has_gun:
                 coroutines.append(fire(canvas=canvas, start_row=row, start_column=fire_column, rows_speed=-1))
 
             row_speed, column_speed = update_speed(
