@@ -122,6 +122,7 @@ async def animate_spaceship(
 
             for obstacle in obstacles:
                 if obstacle.has_collision(obj_corner_row=row, obj_corner_column=column):
+                    await explode(canvas, center_row=row, center_column=column)
                     await show_gameover(canvas=canvas, frame=game_over)
                     return
 
@@ -179,8 +180,7 @@ async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_n
                 canvas=canvas, frame=frame,
                 column=column, rows=frame_rows, columns=frame_columns,
             ))
-            tics = get_garbage_delay_tics(year)
-            await sleep(tics=tics)
+            await sleep(tics=get_garbage_delay_tics(year))
 
 
 async def show_gameover(canvas, frame, row=15, column=35):
@@ -202,8 +202,9 @@ async def sleep(tics):
         await asyncio.sleep(0)
 
 
-async def count_game_duration(year):
+async def count_year():
     """ """
     while True:
-        await sleep(10)
+        global year
+        await sleep(30)
         year += 1
