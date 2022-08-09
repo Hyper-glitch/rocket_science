@@ -222,12 +222,12 @@ async def count_year():
         year += YEAR_INCREASE_VALUE
 
 
-async def show_year(subwindow: curses.window):
+async def show_year(sub_window: curses.window):
     """Render a year on the screen.
-    :param subwindow: obj for render a year on the screen.
+    :param sub_window: obj for render a year on the screen.
     """
     global year
 
     while True:
-        subwindow.addstr(0, 0, f'{year}: {PHRASES.get(year, "")}')
+        sub_window.addstr(0, 0, f'{year}: {PHRASES.get(year, "")}')
         await asyncio.sleep(0)
