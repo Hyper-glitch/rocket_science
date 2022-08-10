@@ -1,8 +1,8 @@
 """Module for running main logic of program."""
 import curses
-import os
 import random
 import time
+from collections import defaultdict
 from pathlib import PurePath, Path
 
 from curses_tools import get_frames
@@ -20,16 +20,12 @@ def draw(canvas: curses.window) -> None:
     curses.curs_set(False)
     rows_number, columns_number = canvas.getmaxyx()  # Return a tuple (y, x) of the height and width of the window.
     abs_base_path = Path('frames').absolute()
-    # all_dirs = os.walk(abs_base_path)
-    # _, sub_dirs, _ = next(all_dirs)
-    frames = []
 
-    # for directory in sub_dirs:
-    #     frames.append(get_frames(path=PurePath.joinpath(abs_base_path, directory)))
+    frame_dirs = ['rocket', 'garbage', 'screensavers']
+    frames = defaultdict(list)
 
-    spaceship_frames = get_frames(path=PurePath.joinpath(abs_base_path, 'rocket'))
-    garbage_frames = get_frames(path=PurePath.joinpath(abs_base_path, 'garbage'))
-    game_over_frame = get_frames(path=PurePath.joinpath(abs_base_path, 'screensavers'))[0]
+    for directory in frame_dirs:
+        frames[directory] = get_frames(path=PurePath.joinpath(abs_base_path, directory))
 
     for star in range(STARS_AMOUNT):
         row = random.randint(0, rows_number - BORDER_THICKNESS)
@@ -44,9 +40,10 @@ def draw(canvas: curses.window) -> None:
     show_year_cor = show_year(sub_window)
     spaceship_coroutine = animate_spaceship(
         canvas=canvas,
-        rows_number=rows_number, columns_number=columns_number, frames=spaceship_frames, game_over=game_over_frame,
+        rows_number=rows_number, columns_number=columns_number, frames=frames['rocket'],
+        game_over=frames['screensavers'][0],
     )
-    garbage_coroutine = fill_orbit_with_garbage(canvas=canvas, frames=garbage_frames, columns_number=columns_number)
+    garbage_coroutine = fill_orbit_with_garbage(canvas=canvas, frames=frames['garbage'], columns_number=columns_number)
     coroutines.extend([year_count_cor, show_year_cor, spaceship_coroutine, garbage_coroutine])
 
     while True:
@@ -55,8 +52,9 @@ def draw(canvas: curses.window) -> None:
                 coroutine.send(None)
             except StopIteration:
                 coroutines.remove(coroutine)
-            if not coroutines:
-                break
+        if not coroutines:
+            break
+
         canvas.refresh()
         time.sleep(TIC_TIMEOUT)
 
