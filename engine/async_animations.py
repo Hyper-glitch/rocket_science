@@ -105,9 +105,9 @@ async def animate_spaceship(
     column = columns_number // 2
 
     for frame in cycle(frames):
+        row_speed = column_speed = 0
 
         for _ in range(2):
-            row_speed = column_speed = 0
             rows_direction, columns_direction, space_pressed = read_controls(canvas)
             frame_rows, frame_columns = get_frame_size(frame)
 
@@ -164,15 +164,17 @@ async def fly_garbage(canvas: curses.window, column: int, frame: str, rows: int,
         for barrier in obstacles_in_last_collisions:
             if barrier.has_collision(obj_corner_row=row, obj_corner_column=column):
                 obstacles_in_last_collisions.remove(barrier)
-                obstacles.remove(obstacle)
                 await explode(canvas, center_row=center_row, center_column=center_column)
                 return
 
         draw_frame(canvas, row, column, frame)
         await asyncio.sleep(0)
         draw_frame(canvas, row, column, frame, negative=True)
+
         row += speed
         obstacle.row += speed
+
+    obstacles.remove(obstacle)
 
 
 async def fill_orbit_with_garbage(frames: list, canvas: curses.window, columns_number: int) -> None:
