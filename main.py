@@ -20,16 +20,16 @@ def draw(canvas: curses.window) -> None:
     curses.curs_set(False)
     rows_number, columns_number = canvas.getmaxyx()  # Return a tuple (y, x) of the height and width of the window.
     abs_base_path = Path('frames').absolute()
-    all_dirs = os.walk(abs_base_path)
-    _, sub_dirs, _ = next(all_dirs)
+    # all_dirs = os.walk(abs_base_path)
+    # _, sub_dirs, _ = next(all_dirs)
     frames = []
 
-    for directory in sub_dirs:
-        frames.append(get_frames(path=PurePath.joinpath(abs_base_path, directory)))
+    # for directory in sub_dirs:
+    #     frames.append(get_frames(path=PurePath.joinpath(abs_base_path, directory)))
 
-    spaceship_frames = frames[0]
-    garbage_frames = frames[1]
-    game_over_frame = frames[2][0]
+    spaceship_frames = get_frames(path=PurePath.joinpath(abs_base_path, 'rocket'))
+    garbage_frames = get_frames(path=PurePath.joinpath(abs_base_path, 'garbage'))
+    game_over_frame = get_frames(path=PurePath.joinpath(abs_base_path, 'screensavers'))[0]
 
     for star in range(STARS_AMOUNT):
         row = random.randint(0, rows_number - BORDER_THICKNESS)
